@@ -200,25 +200,42 @@ class UnlearningClient(Client):
         self,
         epochs: int = 5,
         distill_temp: float = 2.0,
-        lambda_negative: float = 1.0,
+        alpha: float = 0.5,  # 双教师权衡系数: 正向学习 vs 负向遗忘
+        lambda_pos: float = 1.0,  # 正向蒸馏权重(学习全局知识)
+        lambda_neg: float = 1.0,  # 负向蒸馏权重(遗忘本地贡献)
         verbose: bool = False
     ) -> Dict:
         """
-        遗忘训练: 负权重知识蒸馏
+        遗忘训练: 双教师知识蒸馏
+        - 教师A(global_model): 正向学习,保留其他客户端的知识
+        - 教师B(local_model): 负向遗忘,移除自己的历史贡献
+
+        核心思想: 让学生模型同时:
+          1. 学习全局模型的知识 (正向KL散度,权重lambda_pos)
+          2. 远离本地模型的知识 (负向KL散度,权重-lambda_neg)
 
         Args:
             epochs: 训练轮数
             distill_temp: 蒸馏温度
-            lambda_negative: 负向蒸馏权重
+            alpha: 权衡系数 (0-1之间, 越大越重视正向学习)
+            lambda_pos: 正向蒸馏权重
+            lambda_neg: 负向蒸馏权重
             verbose: 是否打印信息
 
         Returns:
             训练统计信息
         """
-        if not self.is_unlearning or self.global_model is None:
+        if not self.is_unlearning:
             raise ValueError("Must call prepare_unlearning() first")
 
+        if self.global_model is None:
+            raise ValueError("Global model is required for unlearning")
+
         self.model.train()
+        self.global_model.eval()
+        if self.local_model is not None:
+            self.local_model.eval()
+
         kl_loss_fn = nn.KLDivLoss(reduction='batchmean')
 
         total_loss = 0.0
@@ -235,21 +252,20 @@ class UnlearningClient(Client):
 
                 # 学生模型输出
                 student_logits = self.model(images)
-                student_probs = torch.nn.functional.log_softmax(
+                student_log_probs = torch.nn.functional.log_softmax(
                     student_logits / distill_temp, dim=1
                 )
 
-                # 全局模型输出 (正向学习)
+                # 正向蒸馏: 学习全局模型 (教师A)
                 with torch.no_grad():
                     global_logits = self.global_model(images)
                     global_probs = torch.nn.functional.softmax(
                         global_logits / distill_temp, dim=1
                     )
 
-                # 正向KL散度 (学习全局知识)
-                loss_positive = kl_loss_fn(student_probs, global_probs)
+                loss_positive = kl_loss_fn(student_log_probs, global_probs)
 
-                # 负向KL散度 (遗忘本地贡献)
+                # 负向蒸馏: 远离本地模型 (教师B)
                 if self.local_model is not None:
                     with torch.no_grad():
                         local_logits = self.local_model(images)
@@ -257,12 +273,20 @@ class UnlearningClient(Client):
                             local_logits / distill_temp, dim=1
                         )
 
-                    loss_negative = kl_loss_fn(student_probs, local_probs)
-                    loss = loss_positive - lambda_negative * loss_negative
+                    loss_negative = kl_loss_fn(student_log_probs, local_probs)
+
+                    # 组合损失: 正向学习 - 负向遗忘
+                    loss = alpha * lambda_pos * loss_positive + \
+                           (1 - alpha) * (-lambda_neg) * loss_negative
                 else:
-                    loss = loss_positive
+                    # 如果没有本地模型,只做正向蒸馏
+                    loss = lambda_pos * loss_positive
 
                 loss.backward()
+
+                # 梯度裁剪
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+
                 self.optimizer.step()
 
                 epoch_loss += loss.item() * images.size(0)

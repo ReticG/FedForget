@@ -202,12 +202,13 @@ def run_fedforget_unlearning(
     for round_idx in range(unlearn_rounds):
         global_params = fedforget_server.get_model_parameters()
 
-        # 遗忘客户端训练
+        # 遗忘客户端训练 (使用温和的梯度上升)
         unlearn_client.set_model_parameters(global_params)
         unlearn_client.unlearning_train(
-            epochs=5,
-            distill_temp=2.0,
-            lambda_negative=1.0,
+            epochs=3,  # 减少轮数
+            method='gradient_ascent',
+            lambda_negative=0.5,  # 降低负权重,防止过度遗忘
+            use_gradient_ascent=True,
             verbose=False
         )
 
