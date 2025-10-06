@@ -208,6 +208,12 @@ class SimpleMIA:
             np.zeros(len(non_member_losses))
         ])
         y_scores = -np.concatenate([member_losses, non_member_losses])  # 负损失作为分数
+
+        # 检查NaN值
+        if np.isnan(y_scores).any():
+            print(f"警告: 检测到NaN值,替换为0")
+            y_scores = np.nan_to_num(y_scores, nan=0.0)
+
         auc = roc_auc_score(y_true, y_scores)
 
         return {

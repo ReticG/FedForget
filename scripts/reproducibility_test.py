@@ -143,10 +143,11 @@ def run_single_experiment(seed, device='cuda'):
 
     finetune_baseline = FineTuningBaseline(
         model=copy.deepcopy(pretrain_model),
+        pretrained_params=pretrain_model.state_dict(),
         device=device,
         lr=0.01
     )
-    finetune_baseline.fine_tune(
+    finetune_baseline.finetune(
         retain_loaders=retain_loaders,
         rounds=10,
         local_epochs=2

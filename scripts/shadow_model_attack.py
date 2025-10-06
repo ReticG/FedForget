@@ -203,6 +203,17 @@ def evaluate_target_model(target_model, fed_data, attack_mia, device='cuda'):
     test_probs = attack_mia.attack_model.predict_proba(test_features)[:, 1]
     test_preds = attack_mia.attack_model.predict(test_features)
 
+    # Debug: 打印预测分布
+    print(f"\n  Debug - Forget预测分布:")
+    print(f"    预测为成员(1): {np.sum(forget_preds == 1)} / {len(forget_preds)} = {np.mean(forget_preds == 1)*100:.1f}%")
+    print(f"    预测为非成员(0): {np.sum(forget_preds == 0)} / {len(forget_preds)} = {np.mean(forget_preds == 0)*100:.1f}%")
+    print(f"    平均概率: {np.mean(forget_probs):.3f} (std={np.std(forget_probs):.3f})")
+
+    print(f"\n  Debug - Test预测分布:")
+    print(f"    预测为成员(1): {np.sum(test_preds == 1)} / {len(test_preds)} = {np.mean(test_preds == 1)*100:.1f}%")
+    print(f"    预测为非成员(0): {np.sum(test_preds == 0)} / {len(test_preds)} = {np.mean(test_preds == 0)*100:.1f}%")
+    print(f"    平均概率: {np.mean(test_probs):.3f} (std={np.std(test_probs):.3f})")
+
     # 计算ASR: forget被识别为成员的比例 (越低说明遗忘效果越好)
     asr = np.mean(forget_preds == 1) * 100
 

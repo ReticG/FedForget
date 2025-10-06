@@ -102,12 +102,16 @@ def run_fedforget_variant(variant_name, fed_data, device='cuda',
     )
 
     # 准备教师模型
+    # 只在使用蒸馏时调用prepare_unlearning()
     if use_distillation:
-        # 设置Teacher A (全局模型)
         unlearn_client.prepare_unlearning(
             global_model_params=pretrain_model.state_dict(),
-            local_model_params=None if not use_dual_teacher else unlearn_client.model.state_dict()
+            local_model_params=unlearn_client.model.state_dict() if use_dual_teacher else None
         )
+        unlearn_client.is_unlearning = True  # 标记为遗忘模式
+    else:
+        # No Distillation变体：不使用知识蒸馏
+        unlearn_client.is_unlearning = True  # 仍需标记为遗忘模式
 
     # 创建服务器
     if use_weight_adjustment:
@@ -125,11 +129,10 @@ def run_fedforget_variant(variant_name, fed_data, device='cuda',
         unlearn_client.set_model_parameters(global_params)
 
         if use_distillation:
-            # 使用蒸馏
-            method = 'dual_teacher' if use_dual_teacher else 'teacher_a_only'
+            # 使用蒸馏 (dual_teacher方法内部会根据local_model是否存在自动处理单/双教师)
             unlearn_client.unlearning_train(
                 epochs=2,
-                method=method,
+                method='dual_teacher',
                 distill_temp=2.0,
                 alpha=0.93,
                 lambda_pos=1.0,
