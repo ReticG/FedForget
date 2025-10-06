@@ -1,0 +1,253 @@
+% ============================================================================
+% FedForget: Federated Unlearning via Dual-Teacher Knowledge Distillation
+% Main LaTeX Document
+% Target: ICML 2025 / NeurIPS 2025
+% ============================================================================
+
+\documentclass{article}
+
+% Use ICML 2025 style (uncomment when ready)
+% \usepackage{icml2025}
+
+% For initial draft, use standard article class with similar formatting
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{xcolor}
+\usepackage{multirow}
+
+% Page setup for draft
+\usepackage[margin=1in]{geometry}
+
+% ============================================================================
+% Title and Authors
+% ============================================================================
+
+\title{FedForget: Federated Unlearning via Dual-Teacher Knowledge Distillation}
+
+\author{
+  Anonymous Authors\\
+  % Institution will be added upon acceptance\\
+  % \texttt{email@domain.com}
+}
+
+% ============================================================================
+% Document begins
+% ============================================================================
+
+\begin{document}
+
+\maketitle
+
+% ============================================================================
+% Abstract
+% ============================================================================
+
+\begin{abstract}
+Federated learning enables collaborative model training without centralizing data, but the ``Right to be Forgotten'' requires efficient mechanisms to remove specific clients' data contributions. Existing federated unlearning methods face a fundamental limitation: single-teacher knowledge distillation uses a contaminated teacher model that contains knowledge from the forgetting client, leading to incomplete unlearning and privacy leakage. We propose \textbf{FedForget}, a novel federated unlearning framework that addresses this challenge through \textbf{dual-teacher knowledge distillation} combined with server-side dynamic weight adjustment. Our key insight is that effective unlearning requires two complementary teachers: a global teacher preserving overall knowledge structure, and a local teacher providing ``clean'' reference without the forgetting client's influence. Through comprehensive experiments on CIFAR-10 with 5 and 10 clients, we demonstrate that FedForget achieves superior multi-objective balance: 20.01±1.92\% forgetting rate, 96.57±1.21\% retention, and near-ideal privacy protection (ASR=52.91±2.32\%, closest to ideal 50\%). Notably, FedForget exhibits counter-intuitive scalability—performance improves with 10 clients (+2.09\% retention, -2.68\% ASR improvement), demonstrating strong applicability to large-scale federated systems. Our ablation study validates that dual-teacher distillation contributes +11.54\% retention compared to single-teacher approaches, while achieving 1.53-1.75$\times$ speedup over complete retraining.
+\end{abstract}
+
+\textbf{Keywords:} Federated Learning, Machine Unlearning, Knowledge Distillation, Privacy Protection, GDPR Compliance
+
+% ============================================================================
+% 1. Introduction
+% ============================================================================
+
+\section{Introduction}
+\label{sec:introduction}
+
+Federated Learning (FL)~\cite{mcmahan2017fedavg} has emerged as a promising paradigm for collaborative machine learning, enabling multiple clients to jointly train a shared global model without exposing their raw data. By keeping data decentralized and performing computation on local devices, FL addresses critical privacy concerns in domains such as healthcare, finance, and mobile applications~\cite{kairouz2021advances,li2020fedprox}.
+
+However, the right to data deletion—enshrined in privacy regulations such as GDPR's ``Right to be Forgotten''~\cite{gdpr2018} and CCPA~\cite{ccpa2020}—poses a significant challenge for federated learning systems. When a client requests to remove their data contribution from a trained model, the straightforward solution is to \textbf{retrain the model from scratch} excluding that client's data. Unfortunately, retraining is prohibitively expensive in large-scale federated settings, where training may involve hundreds or thousands of clients over days or weeks~\cite{yang2019federated,bonawitz2019towards}.
+
+% TODO: Complete introduction section
+% Content from PAPER_INTRODUCTION_RELATEDWORK.md
+
+% ============================================================================
+% 2. Related Work
+% ============================================================================
+
+\section{Related Work}
+\label{sec:related}
+
+% TODO: Complete related work section
+% Content from PAPER_INTRODUCTION_RELATEDWORK.md
+
+% ============================================================================
+% 3. Method
+% ============================================================================
+
+\section{Methodology}
+\label{sec:method}
+
+In this section, we present \textbf{FedForget}, a novel federated unlearning framework that leverages dual-teacher knowledge distillation and dynamic weight adjustment to achieve effective unlearning while preserving model utility.
+
+\subsection{Problem Formulation}
+\label{sec:problem}
+
+% TODO: Complete problem formulation
+% Content from PAPER_METHOD_SECTION.md
+
+\subsection{Dual-Teacher Knowledge Distillation}
+\label{sec:dual-teacher}
+
+% TODO: Complete dual-teacher KD section
+% Content from PAPER_METHOD_SECTION.md
+
+\subsection{Server-Side Dynamic Weight Adjustment}
+\label{sec:weight-adjustment}
+
+% TODO: Complete dynamic weight adjustment section
+% Content from PAPER_METHOD_SECTION.md
+
+\subsection{Complete Algorithm}
+\label{sec:algorithm}
+
+% TODO: Add Algorithm 1 pseudocode
+% Content from PAPER_METHOD_SECTION.md
+
+\subsection{Complexity Analysis}
+\label{sec:complexity}
+
+% TODO: Complete complexity analysis
+% Content from PAPER_METHOD_SECTION.md
+
+% ============================================================================
+% 4. Experiments
+% ============================================================================
+
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+\label{sec:setup}
+
+% TODO: Complete experimental setup
+% Content from PAPER_EXPERIMENTS_SECTION.md
+
+\subsection{Main Results}
+\label{sec:main-results}
+
+% TODO: Add Table 1 and Figure 1
+% Content from PAPER_EXPERIMENTS_SECTION.md
+
+\subsection{Ablation Study}
+\label{sec:ablation}
+
+% TODO: Add Table 2 and Figure 2
+% Content from PAPER_EXPERIMENTS_SECTION.md
+
+\subsection{Scalability Evaluation}
+\label{sec:scalability}
+
+% TODO: Add Table 3, Table 4, and Figure 3
+% Content from PAPER_EXPERIMENTS_SECTION.md
+
+\subsection{Privacy Evaluation}
+\label{sec:privacy}
+
+% TODO: Add Table 5
+% Content from PAPER_EXPERIMENTS_SECTION.md
+
+% ============================================================================
+% 5. Discussion
+% ============================================================================
+
+\section{Discussion}
+\label{sec:discussion}
+
+% TODO: Complete discussion section
+% Content from PAPER_ABSTRACT_DISCUSSION_CONCLUSION.md
+
+% ============================================================================
+% 6. Conclusion
+% ============================================================================
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented \textbf{FedForget}, a novel federated unlearning framework that achieves effective data deletion while preserving model utility through dual-teacher knowledge distillation and server-side dynamic weight adjustment. Our key innovation—using two complementary teachers (global and local)—addresses the fundamental limitation of prior single-teacher approaches, which suffer from teacher contamination.
+
+% TODO: Complete conclusion section
+% Content from PAPER_ABSTRACT_DISCUSSION_CONCLUSION.md
+
+% ============================================================================
+% Acknowledgments
+% ============================================================================
+
+\section*{Acknowledgments}
+
+% TODO: Add acknowledgments if any
+
+% ============================================================================
+% References
+% ============================================================================
+
+\bibliographystyle{icml2025}
+\bibliography{references}
+
+% ============================================================================
+% Appendix (if needed)
+% ============================================================================
+
+\appendix
+
+\section{Additional Experimental Results}
+\label{app:additional}
+
+% TODO: Add appendix content if needed
+
+\section{Theoretical Proofs}
+\label{app:proofs}
+
+% TODO: Add detailed proofs for Propositions 1-3
+
+\section{Hyperparameter Sensitivity Analysis}
+\label{app:hyperparams}
+
+% TODO: Add parameter search complete results
+
+\end{document}
+
+% ============================================================================
+% Notes for LaTeX compilation:
+% ============================================================================
+%
+% 1. Compile with: pdflatex paper_main.tex
+% 2. Bibliography: bibtex paper_main
+% 3. Then: pdflatex paper_main.tex (twice more)
+%
+% Or use latexmk for automatic compilation:
+% latexmk -pdf paper_main.tex
+%
+% ============================================================================
+% TODO List:
+% ============================================================================
+%
+% [ ] Fill in Introduction section (1,400 words from markdown)
+% [ ] Fill in Related Work section (1,500 words from markdown)
+% [ ] Fill in Method sections (2,800 words from markdown)
+% [ ] Fill in Experiments sections (3,500 words from markdown)
+% [ ] Fill in Discussion section (1,800 words from markdown)
+% [ ] Fill in Conclusion section (500 words from markdown)
+% [ ] Add all tables (Tables 1-5)
+% [ ] Add all figures (Figures 1-4)
+% [ ] Add Algorithm 1 pseudocode
+% [ ] Add mathematical equations
+% [ ] Format citations properly
+% [ ] Adjust to ICML/NeurIPS template when ready
+% [ ] Final proofreading and formatting
+%
+% ============================================================================
