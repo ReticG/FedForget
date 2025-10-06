@@ -112,6 +112,7 @@ def run_fedforget_variant(variant_name, fed_data, device='cuda',
     # 创建服务器
     if use_weight_adjustment:
         fedforget_server = FedForgetServer(model=copy.deepcopy(model), device=device)
+        fedforget_server.lambda_forget = 2.0  # 设置权重系数
         fedforget_server.register_unlearning_client(0, current_round=0)
     else:
         fedforget_server = Server(model=copy.deepcopy(model), device=device)
@@ -159,8 +160,7 @@ def run_fedforget_variant(variant_name, fed_data, device='cuda',
         if use_weight_adjustment:
             aggregated = fedforget_server.aggregate_with_fedforget(
                 client_models, client_ids, client_samples,
-                current_round=round_idx,
-                lambda_forget=2.0
+                current_round=round_idx
             )
         else:
             aggregated = fedforget_server.aggregate(client_models, client_samples)

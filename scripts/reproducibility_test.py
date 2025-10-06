@@ -187,6 +187,7 @@ def run_single_experiment(seed, device='cuda'):
     )
 
     fedforget_server = FedForgetServer(model=copy.deepcopy(pretrain_model), device=device)
+    fedforget_server.lambda_forget = 2.0  # 设置权重系数
     fedforget_server.register_unlearning_client(0, current_round=0)
 
     # 遗忘训练
@@ -219,8 +220,7 @@ def run_single_experiment(seed, device='cuda'):
         # FedForget聚合
         aggregated = fedforget_server.aggregate_with_fedforget(
             client_models, client_ids, client_samples,
-            current_round=round_idx,
-            lambda_forget=2.0
+            current_round=round_idx
         )
         fedforget_server.set_model_parameters(aggregated)
 
