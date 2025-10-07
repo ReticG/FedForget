@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[10pt,twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -7,7 +7,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{hyperref}
-\usepackage[margin=1in]{geometry}
+\usepackage[letterpaper,margin=0.75in]{geometry}
 
 \title{FedForget: Federated Unlearning via Dual-Teacher Knowledge Distillation}
 
@@ -73,7 +73,7 @@ We evaluate on CIFAR-10 with ResNet-18 using two configurations: 5 clients and 1
 
 Table~\ref{tab:main_results} shows FedForget achieves best privacy (ASR=52.91\%, closest to 50\%) while maintaining high utility (96.57\% retention).
 
-\begin{table}[htbp]
+\begin{table*}[t]
 \centering
 \caption{Main Results (5 Clients, CIFAR-10)}
 \label{tab:main_results}
@@ -86,13 +86,13 @@ FineTune & $\mathbf{98.22 \pm 1.79}$ & $15.70 \pm 1.90$ & $51.14 \pm 2.42$ & 2.0
 \textbf{FedForget} & $\mathbf{96.57 \pm 1.21}$ & $20.01 \pm 1.92$ & $\mathbf{52.91 \pm 2.32}$ & $\mathbf{1.53}$× \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Figure~\ref{fig:main_results} illustrates the comprehensive comparison across all evaluation metrics.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/figure1_main_results.pdf}
+\includegraphics[width=\columnwidth]{figures/figure1_main_results.pdf}
 \caption{Main experimental results comparing FedForget with Retrain and FineTune baselines across four key metrics: (a) Test Accuracy, (b) Forget Accuracy, (c) Retention Rate, and (d) Attack Success Rate (ASR). FedForget achieves the best privacy protection (ASR closest to 50\%) while maintaining competitive utility.}
 \label{fig:main_results}
 \end{figure}
@@ -101,7 +101,7 @@ Figure~\ref{fig:main_results} illustrates the comprehensive comparison across al
 
 Table~\ref{tab:ablation} validates each component's contribution. Dual-teacher distillation provides +11.54\% retention improvement over single-teacher.
 
-\begin{table}[htbp]
+\begin{table*}[t]
 \centering
 \caption{Ablation Study - Component Contributions}
 \label{tab:ablation}
@@ -115,13 +115,13 @@ No Distillation & 14.10 & $-87.00$\% \\
 No Weight Adjustment & 96.33 & $-4.74$\% \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Figure~\ref{fig:ablation} shows detailed ablation analysis with three subplots examining different aspects.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/figure2_ablation_study.pdf}
+\includegraphics[width=\columnwidth]{figures/figure2_ablation_study.pdf}
 \caption{Ablation study results: (a) Retention comparison across variants, (b) Privacy protection (ASR) for each configuration, (c) Forgetting effectiveness. The dual-teacher approach significantly outperforms single-teacher, preventing catastrophic forgetting while enabling effective unlearning.}
 \label{fig:ablation}
 \end{figure}
@@ -130,7 +130,7 @@ Figure~\ref{fig:ablation} shows detailed ablation analysis with three subplots e
 
 Counter-intuitively, FedForget performs better with more clients (Table~\ref{tab:scalability}). The 10-client configuration achieves +2.09\% retention improvement and ASR=50.23\% (even closer to ideal 50\%).
 
-\begin{table}[htbp]
+\begin{table*}[t]
 \centering
 \caption{Scalability: 10 Clients vs 5 Clients}
 \label{tab:scalability}
@@ -143,13 +143,13 @@ ASR (\%) & $52.91 \pm 2.32$ & $\mathbf{50.23 \pm 1.90}$ & $-2.68$\% \\
 CV (\%) & 2.16 & \textbf{0.75} & $-65$\% \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Figure~\ref{fig:scalability} demonstrates the scalability advantage across multiple dimensions.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/figure3_scalability.pdf}
+\includegraphics[width=\columnwidth]{figures/figure3_scalability.pdf}
 \caption{Scalability analysis comparing 5-client and 10-client configurations: (a) Retention rates, (b) Attack Success Rates showing better privacy with 10 clients, (c) Forgetting rates, (d) Stability measured by coefficient of variation. All metrics improve with more clients, demonstrating FedForget's strong scalability.}
 \label{fig:scalability}
 \end{figure}
@@ -160,7 +160,7 @@ Figure~\ref{fig:weights} illustrates how the forgetting client's aggregation wei
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/figure4_dynamic_weights.pdf}
+\includegraphics[width=\columnwidth]{figures/figure4_dynamic_weights.pdf}
 \caption{Dynamic weight adjustment over unlearning rounds. The forgetting client's weight (red line) decays exponentially according to $w_f^{(t)} = w_f^{(0)} \cdot \exp(-\lambda_{\text{forget}} \cdot t)$, gradually reducing its influence on the global model while remaining clients maintain constant weights.}
 \label{fig:weights}
 \end{figure}
