@@ -59,3 +59,11 @@ Thumbs.db
 
 # Claude Code
 .claude/
+
+# Paper Related Files
+paper/
+figures/
+*.tex
+*.bib
+PAPER_*.md
+如何编译paper*.md
